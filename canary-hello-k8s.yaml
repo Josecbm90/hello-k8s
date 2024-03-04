@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: hello-k8s-canary
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/Josecbm90/jcbm-repo.git'
+    path: canary
+    targetRevision: HEAD
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: hackatones/006/canary/
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - CreateNamespace=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        maxDuration: 3m0s
+        factor: 2

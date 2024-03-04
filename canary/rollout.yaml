@@ -1,0 +1,34 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: hello-kubernetes-custom-canary
+spec:
+  replicas: 3
+  strategy:
+    canary:
+      steps:
+      - setWeight: 0  # Establece el peso en 0, lo que significa que no hay tráfico dirigido a las nuevas réplicas
+      - pause: {}
+      - setWeight: 50  # Establece el peso en 50, lo que significa que el 50% del tráfico se dirige a las nuevas réplicas
+      - pause: {}
+      - setWeight: 100  # Establece el peso en 100, lo que significa que todo el tráfico se dirige a las nuevas réplicas
+      - pause: {}
+  revisionHistoryLimit: 2  # Límite de la historia de revisiones
+  selector:
+    matchLabels:
+      app: hello-kubernetes-custom-canary
+  template:
+    metadata:
+      labels:
+        app: hello-kubernetes-custom-canary
+      # annotations: # Modificación de la anotación para forzar el rollout
+      #   customAnnotation: "force-rollout-v1"
+    spec:
+      containers:
+      - name: hello-kubernetes-canary
+        image: paulbouwer/hello-kubernetes:1.8
+        ports:
+        - containerPort: 8080
+        env:
+        - name: MESSAGE
+          value: I just deployed this on Kubernetes! v3 (Canary)
