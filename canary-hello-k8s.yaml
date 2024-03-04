@@ -5,12 +5,12 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: 'https://github.com/Josecbm90/jcbm-repo.git'
+    repoURL: 'https://github.com/Josecbm90/hello-k8s.git'
     path: canary
     targetRevision: HEAD
   destination:
     server: 'https://kubernetes.default.svc'
-    namespace: hackatones/006/canary/
+    namespace: canary
   syncPolicy:
     automated:
       selfHeal: true
